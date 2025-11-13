@@ -1,0 +1,35 @@
+borrow_records = {
+    "Member1": {"BookA": 2, "BookB": 0, "BookC": 1},
+    "Member2": {"BookA": 0, "BookB": 3, "BookC": 0},
+    "Member3": {"BookA": 0, "BookB": 0, "BookC": 0},
+    "Member4": {"BookA": 1, "BookB": 1, "BookC": 2},
+}
+
+total_borrowed = 0
+member_count = len(borrow_records)
+for books in borrow_records.values():
+    total_borrowed += sum(books.values())
+
+average_borrowed = total_borrowed / member_count
+
+
+book_borrow_counts = {}
+for books in borrow_records.values():
+    for book, count in books.items():
+        book_borrow_counts[book] = book_borrow_counts.get(book, 0) + count
+
+highest_borrowed_book = max(book_borrow_counts, key=book_borrow_counts.get)
+lowest_borrowed_book = min(book_borrow_counts, key=book_borrow_counts.get)
+
+
+no_borrow_members = sum(1 for books in borrow_records.values() if sum(books.values()) == 0)
+
+
+max_borrow = max(book_borrow_counts.values())
+most_frequent_books = [book for book, count in book_borrow_counts.items() if count == max_borrow]
+print("=== Library Borrowing Records ===")
+print(f"Average number of books borrowed per member: {average_borrowed:.2f}")
+print(f"Book with highest borrowings: {highest_borrowed_book} ({book_borrow_counts[highest_borrowed_book]} times)")
+print(f"Book with lowest borrowings: {lowest_borrowed_book} ({book_borrow_counts[lowest_borrowed_book]} times)")
+print(f"Number of members who borrowed no books: {no_borrow_members}")
+print(f"Most frequently borrowed book(s): {', '.join(most_frequent_books)}")

@@ -1,0 +1,88 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+class Graph {
+    int vertices;                      
+    vector<vector<int>> adj;        
+
+public:
+    Graph(int v) {
+        vertices = v;
+        adj.resize(v);
+    }
+
+    
+    void addEdge(int src, int dest) {
+        adj[src].push_back(dest);
+        adj[dest].push_back(src);
+    }
+
+    void pizzaDelivery(int start) {
+        vector<int> distance(vertices, -1);
+        queue<int> q;
+
+        distance[start] = 0;
+        q.push(start);
+
+        cout << "\n Starting pizza delivery from Location " << start << endl;
+
+        while (!q.empty()) {
+            int curr = q.front();
+            q.pop();
+
+            cout << "Delivered to Location " << curr
+                 << " (Time: " << distance[curr] << " units)\n";
+
+            for (int neighbor : adj[curr]) {
+                if (distance[neighbor] == -1) { 
+                    distance[neighbor] = distance[curr] + 1;
+                    q.push(neighbor);
+                }
+            }
+        }
+
+        cout << "\n All reachable locations have been delivered!\n";
+    }
+
+  
+    void displayGraph() {
+        cout << "\n--- Graph Connections ---\n";
+        for (int i = 0; i < vertices; i++) {
+            cout << "Location " << i << " -> ";
+            for (int neighbor : adj[i]) {
+                cout << neighbor << " ";
+            }
+            cout << endl;
+        }
+    }
+};
+
+
+int main() {
+    int V, E;
+    cout << "Enter number of locations: ";
+    cin >> V;
+
+    Graph g(V);
+
+    cout << "Enter number of roads (edges): ";
+    cin >> E;
+
+    cout << "Enter each road connection (source destination):\n";
+    for (int i = 0; i < E; i++) {
+        int src, dest;
+        cin >> src >> dest;
+        g.addEdge(src, dest);
+    }
+
+    int start;
+    cout << "Enter starting location (pizza shop): ";
+    cin >> start;
+
+    g.displayGraph();
+    g.pizzaDelivery(start);
+
+    return 0;
+}

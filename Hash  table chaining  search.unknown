@@ -1,0 +1,95 @@
+#include <iostream>
+#include <list>
+#include <string>
+using namespace std;
+
+class HashTable {
+    static const int SIZE = 10;        
+    list<pair<int, string>> table[SIZE]; 
+
+    int hashFunction(int key) {
+        return key % SIZE; 
+    }
+
+public:
+    
+    void insertItem(int key, string value) {
+        int index = hashFunction(key);
+        for (auto &pair : table[index]) {
+            if (pair.first == key) {
+                pair.second = value; 
+                cout << "Key updated.\n";
+                return;
+            }
+        }
+        table[index].push_back({key, value});
+        cout << "Key inserted successfully.\n";
+    }
+
+  
+    void searchItem(int key) {
+        int index = hashFunction(key);
+        for (auto &pair : table[index]) {
+            if (pair.first == key) {
+                cout << "Found: Key = " << key << ", Value = " << pair.second << endl;
+                return;
+            }
+        }
+        cout << "Key not found.\n";
+    }
+
+  
+    void displayTable() {
+        cout << "\n--- Hash Table ---\n";
+        for (int i = 0; i < SIZE; i++) {
+            cout << i << " --> ";
+            for (auto &pair : table[i]) {
+                cout << "[" << pair.first << " : " << pair.second << "] -> ";
+            }
+            cout << "NULL\n";
+        }
+    }
+};
+
+
+int main() {
+    HashTable ht;
+    int choice, key;
+    string value;
+
+    do {
+        cout << "\n===== HASH TABLE (CHAINING) =====\n";
+        cout << "1. Insert Key-Value\n2. Search Key\n3. Display Table\n0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter key (int): ";
+            cin >> key;
+            cout << "Enter value (string): ";
+            cin >> value;
+            ht.insertItem(key, value);
+            break;
+
+        case 2:
+            cout << "Enter key to search: ";
+            cin >> key;
+            ht.searchItem(key);
+            break;
+
+        case 3:
+            ht.displayTable();
+            break;
+
+        case 0:
+            cout << "Exiting program...\n";
+            break;
+
+        default:
+            cout << "Invalid choice! Try again.\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}

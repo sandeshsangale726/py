@@ -1,0 +1,100 @@
+#include <iostream>
+#include <stack>
+#include <cctype>
+using namespace std;
+
+struct Node {
+    char data;
+    Node* left;
+    Node* right;
+
+    Node(char value) {
+        data = value;
+        left = right = nullptr;
+    }
+};
+
+class ExpressionTree {
+public:
+    Node* buildTreeFromPrefix(string prefix) {
+        stack<Node*> st;
+
+       
+        for (int i = prefix.size() - 1; i >= 0; i--) {
+            char ch = prefix[i];
+
+            if (isalnum(ch)) {  
+                st.push(new Node(ch));
+            } else {            
+                Node* opNode = new Node(ch);
+
+                
+                Node* leftNode = nullptr;
+                Node* rightNode = nullptr;
+
+                if (!st.empty()) rightNode = st.top(), st.pop();
+                if (!st.empty()) leftNode = st.top(), st.pop();
+
+                opNode->left = leftNode;
+                opNode->right = rightNode;
+
+                st.push(opNode);
+            }
+        }
+
+  
+        return st.top();
+    }
+
+   
+    void inorder(Node* root) {
+        if (root) {
+            if (!isalnum(root->data)) cout << "(";
+            inorder(root->left);
+            cout << root->data;
+            inorder(root->right);
+            if (!isalnum(root->data)) cout << ")";
+        }
+    }
+
+  
+    void preorder(Node* root) {
+        if (root) {
+            cout << root->data;
+            preorder(root->left);
+            preorder(root->right);
+        }
+    }
+
+   
+    void postorder(Node* root) {
+        if (root) {
+            postorder(root->left);
+            postorder(root->right);
+            cout << root->data;
+        }
+    }
+};
+
+
+int main() {
+    ExpressionTree et;
+    string prefix;
+
+    cout << "Enter Prefix Expression (e.g. *+AB-CD): ";
+    cin >> prefix;
+
+    Node* root = et.buildTreeFromPrefix(prefix);
+
+    cout << "\nInorder (Infix Expression): ";
+    et.inorder(root);
+
+    cout << "\nPreorder (Prefix Expression): ";
+    et.preorder(root);
+
+    cout << "\nPostorder (Postfix Expression): ";
+    et.postorder(root);
+
+    cout << endl;
+    return 0;
+}

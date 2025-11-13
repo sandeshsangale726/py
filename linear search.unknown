@@ -1,0 +1,17 @@
+# Linear Search Program to Check Customer Account ID
+
+customer_ids = [101, 205, 203, 235, 55]
+
+search_id = int(input("Enter customer account ID to search: "))
+
+found = False
+
+for cid in customer_ids:
+    if cid == search_id:
+        found = True
+        break
+
+if found:
+    print(f"Customer account ID {search_id} exists in the list.")
+else:
+    print(f"Customer account ID {search_id} not found in the list.")

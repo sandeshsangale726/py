@@ -1,0 +1,110 @@
+#include <iostream>
+using namespace std;
+
+#define SIZE 10   
+
+class HashTable {
+    int table[SIZE];   
+    bool occupied[SIZE]; 
+
+public:
+    HashTable() {
+        for (int i = 0; i < SIZE; i++) {
+            table[i] = -1;     
+            occupied[i] = false;
+        }
+    }
+
+    
+    int hashFunction(int key) {
+        return key % SIZE;
+    }
+
+   
+    void insertKey(int key) {
+        int index = hashFunction(key);
+        int startIndex = index;
+
+        do {
+            if (!occupied[index]) {
+                table[index] = key;
+                occupied[index] = true;
+                cout << "Key inserted at index " << index << endl;
+                return;
+            }
+        } while (index != startIndex);
+
+        cout << "Hash table is full! Cannot insert key.\n";
+    }
+
+    void searchKey(int key) {
+        int index = hashFunction(key);
+        int startIndex = index;
+
+        do {
+            if (!occupied[index]) {
+                cout << " Key not found.\n";
+                return;
+            }
+            if (table[index] == key) {
+                cout << " Key " << key << " found at index " << index << endl;
+                return;
+            }
+            index = (index + 1) % SIZE;
+        } while (index != startIndex);
+
+        cout << " Key not found.\n";
+    }
+
+    void displayTable() {
+        cout << "\n--- Hash Table (Linear Probing) ---\n";
+        for (int i = 0; i < SIZE; i++) {
+            cout << i << " --> ";
+            if (occupied[i])
+                cout << table[i];
+            else
+                cout << "EMPTY";
+            cout << endl;
+        }
+    }
+};
+
+
+int main() {
+    HashTable ht;
+    int choice, key;
+
+    do {
+        cout << "\n===== HASH TABLE (LINEAR PROBING) =====\n";
+        cout << "1. Insert Key\n2. Search Key\n3. Display Table\n0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter key: ";
+            cin >> key;
+            ht.insertKey(key);
+            break;
+
+        case 2:
+            cout << "Enter key to search: ";
+            cin >> key;
+            ht.searchKey(key);
+            break;
+
+        case 3:
+            ht.displayTable();
+            break;
+
+        case 0:
+            cout << "Exiting program...\n";
+            break;
+
+        default:
+            cout << "Invalid choice! Try again.\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}

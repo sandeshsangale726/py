@@ -1,0 +1,160 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int rollNo;
+    string name;
+    float marks;
+    Student* next;
+};
+
+class StudentList {
+private:
+    Student* head;
+
+public:
+    StudentList() { head = nullptr; }
+
+    
+    void addStudent(int rollNo, string name, float marks) {
+        Student* newStudent = new Student{rollNo, name, marks, nullptr};
+        if (!head) {
+            head = newStudent;
+        } else {
+            Student* temp = head;
+            while (temp->next)
+                temp = temp->next;
+            temp->next = newStudent;
+        }
+        cout << "Record added successfully!\n";
+    }
+
+    
+    void display() {
+        if (!head) {
+            cout << "No records to display.\n";
+            return;
+        }
+        Student* temp = head;
+        cout << "\nRoll No\tName\tMarks\n";
+        cout << "--------------------------\n";
+        while (temp) {
+            cout << temp->rollNo << "\t" << temp->name << "\t" << temp->marks << endl;
+            temp = temp->next;
+        }
+    }
+
+    
+    void deleteStudent(int rollNo) {
+        if (!head) {
+            cout << "List is empty.\n";
+            return;
+        }
+        if (head->rollNo == rollNo) {
+            Student* temp = head;
+            head = head->next;
+            delete temp;
+            cout << "Record deleted successfully!\n";
+            return;
+        }
+        Student* temp = head;
+        while (temp->next && temp->next->rollNo != rollNo)
+            temp = temp->next;
+        if (!temp->next) {
+            cout << "Record not found.\n";
+            return;
+        }
+        Student* toDelete = temp->next;
+        temp->next = toDelete->next;
+        delete toDelete;
+        cout << "Record deleted successfully!\n";
+    }
+
+    
+    void updateStudent(int rollNo) {
+        Student* temp = head;
+        while (temp && temp->rollNo != rollNo)
+            temp = temp->next;
+        if (!temp) {
+            cout << "Record not found.\n";
+            return;
+        }
+        cout << "Enter new name: ";
+        cin >> temp->name;
+        cout << "Enter new marks: ";
+        cin >> temp->marks;
+        cout << "Record updated successfully!\n";
+    }
+
+    
+    void sortRecords(bool byMarks = false, bool ascending = true) {
+        if (!head || !head->next)
+            return;
+        for (Student* i = head; i->next; i = i->next) {
+            for (Student* j = i->next; j; j = j->next) {
+                bool condition;
+                if (byMarks)
+                    condition = ascending ? (i->marks > j->marks) : (i->marks < j->marks);
+                else
+                    condition = ascending ? (i->rollNo > j->rollNo) : (i->rollNo < j->rollNo);
+
+                if (condition) {
+                    swap(i->rollNo, j->rollNo);
+                    swap(i->name, j->name);
+                    swap(i->marks, j->marks);
+                }
+            }
+        }
+        cout << "Records sorted successfully!\n";
+    }
+};
+
+int main() {
+    StudentList list;
+    int choice, rollNo;
+    string name;
+    float marks;
+
+    do {
+        cout << "\n---- Student Record Management System ----\n";
+        cout << "1. Add Student\n2. Display Students\n3. Delete Student\n4. Update Student\n";
+        cout << "5. Sort by Roll No\n6. Sort by Marks\n0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter Roll No, Name, Marks: ";
+                cin >> rollNo >> name >> marks;
+                list.addStudent(rollNo, name, marks);
+                break;
+            case 2:
+                list.display();
+                break;
+            case 3:
+                cout << "Enter Roll No to delete: ";
+                cin >> rollNo;
+                list.deleteStudent(rollNo);
+                break;
+            case 4:
+                cout << "Enter Roll No to update: ";
+                cin >> rollNo;
+                list.updateStudent(rollNo);
+                break;
+            case 5:
+                list.sortRecords(false, true);
+                break;
+            case 6:
+                list.sortRecords(true, true);
+                break;
+            case 0:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice!\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}

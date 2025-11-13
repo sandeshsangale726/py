@@ -1,0 +1,38 @@
+class RealTimeEventProcessor:
+    def _init_(self):
+        self.queue = []  
+    def add_event(self, event):
+        self.queue.append(event)
+        print(f"Event '{event}' added.")
+    def process_event(self):
+        if not self.queue:
+            print("No events to process.")
+            return
+        event = self.queue.pop(0)
+        print(f" Processing '{event}'...")
+        print(f"event '{event}' processed.")
+    def show_events(self):
+        if not self.queue:
+            print("No pending events.")
+        else:
+            print("\nPending Events:")
+            for i, e in enumerate(self.queue, 1):
+                print(f"{i}. {e}")
+    def cancel_event(self, event):
+        if event in self.queue:
+            self.queue.remove(event)
+            print(f"Event '{event}' cancelled.")
+        else:
+            print(f"Event '{event}' not found.")
+system = RealTimeEventProcessor()
+
+system.add_event("User Login")
+system.add_event("Database Backup")
+system.add_event("Email Send")
+
+system.show_events()
+
+system.process_event()
+system.cancel_event("Email Send")
+
+system.show_events()

@@ -1,0 +1,41 @@
+class TextEditor:
+    
+    def _init_(self):
+        self.undo_stack = [""]  
+        
+        
+        self.redo_stack = []
+
+    def make_change(self, new_text_state: str):
+        self.redo_stack = []
+        
+        
+        self.undo_stack.append(new_text_state)
+        print(f" Change made: '{new_text_state}'")
+
+    def undo_action(self):
+        
+        if len(self.undo_stack) > 1:
+            
+            undone_state = self.undo_stack.pop()
+            self.redo_stack.append(undone_state)
+            print("Undo successful.")
+        else:
+            print("Cannot undo: At initial state or no changes made.")
+            
+    def redo_action(self):
+        
+        if self.redo_stack:
+            redone_state = self.redo_stack.pop()
+            self.undo_stack.append(redone_state)
+            print("Redo successful.")
+        else:
+            print("Cannot redo: Nothing to reapply.")
+
+    def display_document_state(self):
+       
+        if self.undo_stack:
+            current_state = self.undo_stack[-1] 
+            print(f"\nCurrent Document State: *{current_state}*")
+        else:
+            print("\nc urrent Document State: *[Error: Empty Editor]*")

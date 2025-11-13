@@ -1,0 +1,149 @@
+#include <iostream>
+using namespace std;
+
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = right = nullptr;
+    }
+};
+
+
+class BST {
+public:
+    Node* root;
+
+    BST() {
+        root = nullptr;
+    }
+
+  
+    Node* insert(Node* node, int value) {
+        if (node == nullptr)
+            return new Node(value);
+
+        if (value < node->data)
+            node->left = insert(node->left, value);
+        else if (value > node->data)
+            node->right = insert(node->right, value);
+        else
+            cout << "⚠ Duplicate value ignored.\n";
+
+        return node;
+    }
+
+    Node* search(Node* node, int key) {
+        if (node == nullptr || node->data == key)
+            return node;
+
+        if (key < node->data)
+            return search(node->left, key);
+        else
+            return search(node->right, key);
+    }
+
+
+    Node* findMin(Node* node) {
+        while (node && node->left != nullptr)
+            node = node->left;
+        return node;
+    }
+
+    
+    Node* deleteNode(Node* node, int key) {
+        if (node == nullptr)
+            return node;
+
+        if (key < node->data)
+            node->left = deleteNode(node->left, key);
+        else if (key > node->data)
+            node->right = deleteNode(node->right, key);
+        else {
+          
+            if (node->left == nullptr && node->right == nullptr) {
+                delete node;
+                return nullptr;
+            } else if (node->left == nullptr) {
+                Node* temp = node->right;
+                delete node;
+                return temp;
+            } else if (node->right == nullptr) {
+                Node* temp = node->left;
+                delete node;
+                return temp;
+            }
+
+           
+            Node* temp = findMin(node->right);
+            node->data = temp->data;
+            node->right = deleteNode(node->right, temp->data);
+        }
+        return node;
+    }
+
+    
+    void inorder(Node* node) {
+        if (node != nullptr) {
+            inorder(node->left);
+            cout << node->data << " ";
+            inorder(node->right);
+        }
+    }
+};
+
+int main() {
+    BST bst;
+    int choice, value;
+
+    do {
+        cout << "\n===== BINARY SEARCH TREE =====\n";
+        cout << "1. Insert Node\n2. Delete Node\n3. Search Node\n4. Display (Inorder)\n0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter value to insert: ";
+            cin >> value;
+            bst.root = bst.insert(bst.root, value);
+            cout << "Node inserted.\n";
+            break;
+
+        case 2:
+            cout << "Enter value to delete: ";
+            cin >> value;
+            bst.root = bst.deleteNode(bst.root, value);
+            cout << "Node deleted (if it existed).\n";
+            break;
+
+        case 3:
+            cout << "Enter value to search: ";
+            cin >> value;
+            if (bst.search(bst.root, value))
+                cout << "Value found in the tree.\n";
+            else
+                cout << "Value not found.\n";
+            break;
+
+        case 4:
+            cout << "Inorder Traversal (sorted): ";
+            bst.inorder(bst.root);
+            cout << endl;
+            break;
+
+        case 0:
+            cout << "Exiting program...\n";
+            break;
+
+        default:
+            cout << "Invalid choice! Try again.\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}
